@@ -3,6 +3,7 @@ package ru.skillbench.tasks.text;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -203,7 +204,8 @@ public class ContactCardImpl implements ContactCard {
             throw new NoSuchElementException();
         }
         Calendar result = Calendar.getInstance();
-        result.set(birthday.getYear(), birthday.getMonthValue() - 1, birthday.getDayOfMonth(), 0, 0, 0);
+        //result.set(birthday.getYear(), birthday.getMonthValue() - 1, birthday.getDayOfMonth(), 0, 0, 0);
+        result.setTimeInMillis(birthday.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
         return result;
     }
 

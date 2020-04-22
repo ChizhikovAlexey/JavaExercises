@@ -69,21 +69,26 @@ public class ComplexNumberImpl implements ComplexNumber {
      */
     @Override
     public void set(String value) throws NumberFormatException {
-        Pattern pattern = Pattern.compile("\\A[+-]?\\d*\\.?\\d+(?![.i])");
+        Pattern pattern = Pattern.compile("^(?<firstNumber>([-+]?\\d+(\\.\\d+)?i?)|([-+]?i))?" +
+                "(?<secondNumber>([-+]?\\d+(\\.\\d+)?i)|([-+]?i))?$");
         Matcher matcher = pattern.matcher(value);
-        boolean numberFound = false;
-        if (matcher.find()) {
-            real = Double.parseDouble(matcher.group());
-            pattern = Pattern.compile("[+-]\\d*\\.?\\d+(?=i)\\B");
+        if (matcher.matches()) {
+            real = 0.0;
+            imaginary = 0.0;
+            String first = matcher.group("firstNumber");
+            String second = matcher.group("secondNumber");
+            if (first != null && !first.endsWith("i")) {
+                real = Double.parseDouble(first);
+            } else if (first != null){
+                imaginary = Double.parseDouble(first.substring(0, first.length() - 1));
+            }
+            if (second != null && !second.endsWith("i") && real == 0.0) {
+                real = Double.parseDouble(second);
+            } else if (second != null && second.endsWith("i") && imaginary == 0.0){
+                imaginary = Double.parseDouble(second.substring(0, second.length() - 1));
+            }
         } else {
-            pattern = Pattern.compile("[+-]?\\d*\\.?\\d+(?=i)\\B");
-        }
-        matcher.reset();
-        matcher.usePattern(pattern);
-        if (matcher.find()) {
-            imaginary = Double.parseDouble(matcher.group());
-        } else {
-            checkSimpleImaginary(pattern, matcher);
+            throw new NumberFormatException();
         }
     }
 

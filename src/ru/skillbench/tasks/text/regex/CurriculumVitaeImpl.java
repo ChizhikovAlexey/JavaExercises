@@ -15,7 +15,9 @@ public class CurriculumVitaeImpl implements CurriculumVitae {
     private String firstName;
     private String middleName;
     private String lastName;
-    private HashMap<String, String> hiddenParts;
+    private final HashMap<String, String> hiddenParts;
+    //private static final String PHONE_PATTERN =
+    //"(?<code>(?:\\()?([1-9][0-9]{2}(?:\\())[-. ]*)?([1-9][0-9]{2})[-. ]*(\\d{2})[-. ]*(\\d{2})(\\s*ext\\.?\\s*([0-9]+))?";
 
     public CurriculumVitaeImpl() {
         text = null;
@@ -32,7 +34,7 @@ public class CurriculumVitaeImpl implements CurriculumVitae {
      *
      * @throws IllegalStateException Если не задан текст резюме
      */
-    void checkStateException() throws IllegalStateException {
+    private void checkStateException() throws IllegalStateException {
         if (text == null) {
             throw new IllegalStateException();
         }
@@ -82,9 +84,7 @@ public class CurriculumVitaeImpl implements CurriculumVitae {
         if (phoneNumbers.isEmpty()) {
             Pattern pattern = Pattern.compile(PHONE_PATTERN);
             Matcher matcher = pattern.matcher(text);
-            System.out.println("Parsing phones in: " + text);
             while (matcher.find()) {
-                System.out.println("found: " + matcher.group());
                 phoneNumbers.add(new Phone(matcher.group()));
             }
         }
@@ -314,7 +314,8 @@ public class CurriculumVitaeImpl implements CurriculumVitae {
         hiddenParts.keySet().forEach(hider -> {
             try {
                 System.out.println("Seek " + removeParenthesises(hider) + " in " + text);
-                setText(Pattern.compile(removeParenthesises(hider)).matcher(text).replaceFirst(hiddenParts.get(hider)));
+                setText(Pattern.compile(removeParenthesises(hider)).matcher(text).
+                        replaceFirst(hiddenParts.get(hider)));
                 replacements.getAndIncrement();
             } catch (Exception ignored) {
             }

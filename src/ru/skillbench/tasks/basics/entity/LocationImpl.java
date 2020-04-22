@@ -108,7 +108,7 @@ public class LocationImpl implements Location {
     @Override
     public String getAddress() {
         if (parent != null) {
-            return parent.getAddress() + ", " + (name.matches("(\\S+\\..*)|(.*(?:[.]))") ? name : (type.getNameForAddress() + getName()));
+            return (name.matches("(\\S+\\..*)|(.*(?:[.]))") ? name : (type.getNameForAddress() + getName())) + ", "  + parent.getAddress() ;
         } else return (name.matches("(\\S+\\..*)|(.*(?:[.]))") ? name : (type.getNameForAddress() + getName()));
     }
 
